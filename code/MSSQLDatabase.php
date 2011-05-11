@@ -132,7 +132,7 @@ class MSSQLDatabase extends SS_Database {
 
 		if($this->mssql) {
 			// Switch to utf8 connection charset
-			ini_set('mssql.charset', 'utf8');
+			ini_set('mssql.charset', 'utf16');
 			$this->dbConn = mssql_connect($parameters['server'], $parameters['username'], $parameters['password'], true);
 		} else {
 			// Disable default warnings as errors behaviour for sqlsrv to keep it in line with mssql functions
@@ -691,7 +691,7 @@ class MSSQLDatabase extends SS_Database {
 		//This gets us more information than we need, but I've included it all for the moment....
 		$fieldRecords = $this->query("SELECT ordinal_position, column_name, data_type, column_default,
 			is_nullable, character_maximum_length, numeric_precision, numeric_scale, collation_name
-			FROM information_schema.columns WHERE table_name = '$table'
+			FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table'
 			ORDER BY ordinal_position;");
 
 		// Cache the records from the query - otherwise a lack of multiple active result sets
@@ -1073,7 +1073,7 @@ class MSSQLDatabase extends SS_Database {
 	 */
 	public function text($values) {
 		$collation = self::$collation ? " COLLATE " . self::$collation : "";
-		return "nvarchar(max)$collation null";
+		return "varchar(max)$collation null";
 	}
 
 	/**
@@ -1094,7 +1094,7 @@ class MSSQLDatabase extends SS_Database {
 	 */
 	public function varchar($values) {
 		$collation = self::$collation ? " COLLATE " . self::$collation : "";
-		return "nvarchar(" . $values['precision'] . ")$collation null";
+		return "varchar(" . $values['precision'] . ")$collation null";
 	}
 
 	/**
@@ -1134,7 +1134,7 @@ class MSSQLDatabase extends SS_Database {
 	 */
 	function hasTable($tableName) {
 		$SQL_tableName = Convert::raw2sql($tableName);
-		$value = DB::query("SELECT table_name FROM information_schema.tables WHERE table_name = '$SQL_tableName'")->value();
+		$value = DB::query("SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_name = '$SQL_tableName'")->value();
 		return (bool)$value;
 	}
 
